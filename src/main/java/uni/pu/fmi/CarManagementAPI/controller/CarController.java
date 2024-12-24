@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.pu.fmi.CarManagementAPI.dto.request.CreateCarDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.CarResponse;
-import uni.pu.fmi.CarManagementAPI.dto.response.GarageResponse;
 import uni.pu.fmi.CarManagementAPI.service.CarService;
 
 import java.util.List;
@@ -27,5 +26,22 @@ public class CarController {
     public ResponseEntity<List<CarResponse>> getCars() {
         List<CarResponse> resp = carService.getAllCars();
         return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<CarResponse> updateCar(@RequestHeader Long id,
+                                                       @RequestBody CreateCarDTO createCarDTO){
+        CarResponse car=carService.updateCar(id,createCarDTO);
+        return ResponseEntity.ok(car);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<CarResponse> getCarById(@RequestHeader Long id){
+        CarResponse car=carService.getCarById(id);
+        return ResponseEntity.ok(car);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CarResponse> deleteCar(@RequestHeader Long id){
+        CarResponse car=carService.deleteCarById(id);
+        return ResponseEntity.ok(car);
     }
 }
