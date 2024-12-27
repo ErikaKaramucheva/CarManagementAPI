@@ -5,18 +5,19 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
 @Data
 @Getter
 @Setter
-public class CreateCarDTO {
+public class UpdateCarDTO {
     @NotEmpty(message = "Make is required!")
     private String make;
     @NotEmpty(message = "Model is required!")
     private String model;
     @Positive(message = "Production year must be positive!")
-    private Integer productionYear;
+    private int productionYear;
     @NotEmpty(message = "License plate is required!")
     private String licensePlate;
     private Set<Long> garageIds;

@@ -5,10 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import uni.pu.fmi.CarManagementAPI.dto.request.CreateGarageDTO;
-import uni.pu.fmi.CarManagementAPI.dto.request.GarageAvailabilityDTO;
-import uni.pu.fmi.CarManagementAPI.dto.request.UpdateGarageDTO;
-import uni.pu.fmi.CarManagementAPI.dto.response.GarageAvailabilityResponse;
-import uni.pu.fmi.CarManagementAPI.dto.response.GarageResponse;
+import uni.pu.fmi.CarManagementAPI.dto.response.MonthlyRequestsReportDTO;
+import uni.pu.fmi.CarManagementAPI.dto.response.GarageDailyAvailabilityReportDTO;
+import uni.pu.fmi.CarManagementAPI.dto.response.ResponseGarageDTO;
 import uni.pu.fmi.CarManagementAPI.model.Garage;
 import uni.pu.fmi.CarManagementAPI.repository.GarageRepository;
 import uni.pu.fmi.CarManagementAPI.service.GarageService;
@@ -23,8 +22,8 @@ public class GarageServiceImpl implements GarageService {
     @Autowired
     private GarageRepository garageRepository;
 
-    private GarageResponse mapGarageToGarageResponse(Garage garageRequest){
-        GarageResponse response = new GarageResponse();
+    private ResponseGarageDTO mapGarageToGarageResponse(Garage garageRequest) {
+        ResponseGarageDTO response = new ResponseGarageDTO();
         response.setId(garageRequest.getGarageId());
         response.setName(garageRequest.getName());
         response.setLocation(garageRequest.getLocation());
@@ -34,7 +33,7 @@ public class GarageServiceImpl implements GarageService {
 
     }
 
-    private Garage mapGarageRequestToGarage(CreateGarageDTO garageRequest){
+    private Garage mapGarageRequestToGarage(CreateGarageDTO garageRequest) {
         Garage garage = new Garage();
         garage.setName(garageRequest.getName());
         garage.setCity(garageRequest.getCity());
@@ -43,61 +42,72 @@ public class GarageServiceImpl implements GarageService {
         return garage;
 
     }
+
     @Override
-    public GarageResponse addGarage(CreateGarageDTO createGarageDTO) {
+    public ResponseGarageDTO addGarage(CreateGarageDTO createGarageDTO) {
         Garage newGarage = mapGarageRequestToGarage(createGarageDTO);
-        newGarage=garageRepository.save(newGarage);
+        newGarage = garageRepository.save(newGarage);
         return mapGarageToGarageResponse(newGarage);
     }
 
     @Override
-    public GarageResponse deleteGarageById(Long id) {
+    public ResponseGarageDTO deleteGarageById(Long id) {
         Optional<Garage> currentGarage = garageRepository.findById(id);
-        if(!currentGarage.isPresent()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Garage not found");
+        if (!currentGarage.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Garage not found");
         }
-        Garage garage=currentGarage.get();
+        Garage garage = currentGarage.get();
         garageRepository.delete(garage);
         return mapGarageToGarageResponse(garage);
     }
 
     @Override
-    public GarageResponse getGarageById(Long id) {
+    public ResponseGarageDTO getGarageById(Long id) {
         Optional<Garage> currentGarage = garageRepository.findById(id);
-        if(!currentGarage.isPresent()){
-            throw new ResponseStatusException((HttpStatus.NOT_FOUND),"Garage Not Found");
+        if (!currentGarage.isPresent()) {
+            throw new ResponseStatusException((HttpStatus.NOT_FOUND), "Garage Not Found");
         }
         Garage garage = currentGarage.get();
         return mapGarageToGarageResponse(garage);
     }
 
     @Override
-    public GarageResponse updateGarage(Long id,CreateGarageDTO updateGarageDTO) {
+    public ResponseGarageDTO updateGarage(Long id, CreateGarageDTO updateGarageDTO) {
         Optional<Garage> currentGarage = garageRepository.findById(id);
-        if(!currentGarage.isPresent()){
-            throw new ResponseStatusException((HttpStatus.NOT_FOUND),"Garage Not Found");
+        if (!currentGarage.isPresent()) {
+            throw new ResponseStatusException((HttpStatus.NOT_FOUND), "Garage Not Found");
         }
         Garage garage = currentGarage.get();
         garage.setName(updateGarageDTO.getName());
         garage.setCity(updateGarageDTO.getCity());
         garage.setLocation(updateGarageDTO.getLocation());
         garage.setCapacity(updateGarageDTO.getCapacity());
-        garage=garageRepository.save(garage);
+        garage = garageRepository.save(garage);
         return mapGarageToGarageResponse(garage);
     }
 
     @Override
-    public List<GarageResponse> getAllGarages() {
+    public List<ResponseGarageDTO> getAllGarages() {
         List<Garage> garages = garageRepository.findAll();
-        List<GarageResponse> responseList=new ArrayList<>();
-        for(Garage g : garages){
-           responseList.add(mapGarageToGarageResponse(g));
+        List<ResponseGarageDTO> responseList = new ArrayList<>();
+        for (Garage g : garages) {
+            responseList.add(mapGarageToGarageResponse(g));
         }
         return responseList;
     }
 
     @Override
-    public List<GarageAvailabilityResponse> dailyAvailabilityReport(GarageAvailabilityDTO garageAvailabilityDTO) {
+    public List<GarageDailyAvailabilityReportDTO> dailyAvailabilityReport(MonthlyRequestsReportDTO monthlyRequestsReportDTO) {
         return null;
+    }
+
+    @Override
+    public List<ResponseGarageDTO> getGaragesByCity(String city) {
+        List<Garage> garages = (List<Garage>) garageRepository.findGaragesByCity(city);
+        List<ResponseGarageDTO> responseList = new ArrayList<>();
+        for (Garage g : garages) {
+            responseList.add(mapGarageToGarageResponse(g));
+        }
+        return responseList;
     }
 }

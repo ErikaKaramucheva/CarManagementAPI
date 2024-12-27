@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GarageResponse {
+public class ResponseGarageDTO {
     private Long id;
     private String name;
     private String location;

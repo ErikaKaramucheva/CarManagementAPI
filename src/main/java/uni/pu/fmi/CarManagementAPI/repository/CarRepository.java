@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import uni.pu.fmi.CarManagementAPI.model.Car;
 
 @Repository
-public interface CarRepository extends ListCrudRepository<Car,Long> {
+public interface CarRepository extends ListCrudRepository<Car, Long> {
 }
