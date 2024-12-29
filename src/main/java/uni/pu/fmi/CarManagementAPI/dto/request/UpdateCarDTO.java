@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -20,5 +21,5 @@ public class UpdateCarDTO {
     private int productionYear;
     @NotEmpty(message = "License plate is required!")
     private String licensePlate;
-    private Set<Long> garageIds;
+    private List<Long> garageIds;
 }

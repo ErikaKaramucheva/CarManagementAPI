@@ -22,11 +22,11 @@ public class Maintenance {
     @Column(nullable = false)
     private String serviceType;
     @ManyToOne
-    @JoinColumn(name="carId",nullable = false)
+    @JoinColumn(name="carId")
     private Car car;
     @Column(nullable = false)
     private LocalDate scheduledDate;
     @ManyToOne
-    @JoinColumn(name="garageId",nullable = false)
+    @JoinColumn(name="garageId")
     private Garage garage;
 }

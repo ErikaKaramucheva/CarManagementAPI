@@ -2,6 +2,7 @@ package uni.pu.fmi.CarManagementAPI.service;
 
 import org.springframework.stereotype.Service;
 import uni.pu.fmi.CarManagementAPI.dto.request.CreateCarDTO;
+import uni.pu.fmi.CarManagementAPI.dto.request.UpdateCarDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.ResponseCarDTO;
 
 import java.util.List;
@@ -14,9 +15,10 @@ public interface CarService {
 
     ResponseCarDTO getCarById(Long id);
 
-    ResponseCarDTO updateCar(Long id, CreateCarDTO createCarDTO);
+    ResponseCarDTO updateCar(Long id, UpdateCarDTO updateCarDTO);
 
     List<ResponseCarDTO> getAllCars();
+    List<ResponseCarDTO> getAllCars(String carMake, Long garageId, String city, Integer fromYear, Integer toYear);
 
 
 }

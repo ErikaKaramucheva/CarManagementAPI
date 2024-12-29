@@ -1,10 +1,12 @@
 package uni.pu.fmi.CarManagementAPI.service;
 
 import uni.pu.fmi.CarManagementAPI.dto.request.CreateGarageDTO;
+import uni.pu.fmi.CarManagementAPI.dto.request.UpdateGarageDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.MonthlyRequestsReportDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.GarageDailyAvailabilityReportDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.ResponseGarageDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface GarageService {
@@ -14,11 +16,11 @@ public interface GarageService {
 
     ResponseGarageDTO getGarageById(Long id);
 
-    ResponseGarageDTO updateGarage(Long id, CreateGarageDTO createGarageDTO);
+    ResponseGarageDTO updateGarage(Long id, UpdateGarageDTO updateGarageDTO);
 
-    List<ResponseGarageDTO> getAllGarages();
+    //List<ResponseGarageDTO> getAllGarages();
 
-    List<GarageDailyAvailabilityReportDTO> dailyAvailabilityReport(MonthlyRequestsReportDTO monthlyRequestsReportDTO);
+    List<GarageDailyAvailabilityReportDTO> dailyAvailabilityReport(Long garageId, LocalDate startDate, LocalDate endDate);
 
     List<ResponseGarageDTO> getGaragesByCity(String city);
 }

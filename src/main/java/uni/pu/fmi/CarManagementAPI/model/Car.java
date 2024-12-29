@@ -27,13 +27,14 @@ public class Car {
     private Integer productionYear;
     @Column(nullable = false)
     private String licensePlate;
-   @ManyToMany
-   @JoinTable( name="maintenance",
-           joinColumns = @JoinColumn(name="garageId")
-   )
-    private Set<Garage> garages;
-    @OneToMany(mappedBy = "car")
-    private Set<Maintenance> maintenances;
+   @ManyToMany(fetch = FetchType.EAGER)
+   @JoinTable(name = "car_garage",
+    joinColumns = @JoinColumn(name = "car_id"),
+    inverseJoinColumns = @JoinColumn(name = "garage_id"))
+
+    private List<Garage> garages;
+    /*@OneToMany(mappedBy = "car")
+    private Set<Maintenance> maintenances;*/
 
 
 }

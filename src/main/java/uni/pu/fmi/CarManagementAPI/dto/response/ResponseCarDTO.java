@@ -2,7 +2,7 @@ package uni.pu.fmi.CarManagementAPI.dto.response;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Getter
@@ -15,5 +15,5 @@ public class ResponseCarDTO {
     private String model;
     private Integer productionYear;
     private String licensePlate;
-    private Set<ResponseGarageDTO> garages;
+    private List<ResponseGarageDTO> garages;
 }
