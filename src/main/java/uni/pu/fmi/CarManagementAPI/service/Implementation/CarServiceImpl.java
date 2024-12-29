@@ -37,6 +37,17 @@ public class CarServiceImpl implements CarService {
 
     }
 
+    @Override
+    public Garage mapResponseGarageToGarage(ResponseGarageDTO garageResponse){
+        Garage garage = new Garage();
+        garage.setGarageId(garageResponse.getId());
+        garage.setName(garageResponse.getName());
+        garage.setCity(garageResponse.getCity().toLowerCase());
+        garage.setLocation(garageResponse.getLocation());
+        garage.setCapacity(garageResponse.getCapacity());
+        return garage;
+    }
+
     private Car mapCarRequestToCar(CreateCarDTO carRequest) {
         Car car = new Car();
         car.setMake(carRequest.getMake());
@@ -47,13 +58,7 @@ public class CarServiceImpl implements CarService {
         List<Long> garageList= (List<Long>) carRequest.getGarageIds();
         for(int i=0;i<garageList.size();i++){
             ResponseGarageDTO g=garageService.getGarageById(garageList.get(i));
-            Garage garage = new Garage();
-            garage.setGarageId(g.getId());
-            garage.setName(g.getName());
-            garage.setCity(g.getCity().toLowerCase());
-            garage.setLocation(g.getLocation());
-            garage.setCapacity(g.getCapacity());
-            newGarages.add(garage);
+            newGarages.add(mapResponseGarageToGarage(g));
         }
         car.setGarages(newGarages);
         return car;
@@ -104,28 +109,13 @@ public class CarServiceImpl implements CarService {
         List<Long> garageList= (List<Long>) updateCarDTO.getGarageIds();
         for(int i=0;i<garageList.size();i++){
             ResponseGarageDTO g=garageService.getGarageById(garageList.get(i));
-            Garage garage = new Garage();
-            garage.setGarageId(g.getId());
-            garage.setName(g.getName());
-            garage.setCity(g.getCity().toLowerCase());
-            garage.setLocation(g.getLocation());
-            garage.setCapacity(g.getCapacity());
-            garages.add(garage);
+            garages.add(mapResponseGarageToGarage(g));
         }
         car.setGarages(garages);
         car = carRepository.save(car);
         return mapCarToCarResponse(car);
     }
 
-    @Override
-    public List<ResponseCarDTO> getAllCars() {
-        List<Car> cars = carRepository.findAll();
-        List<ResponseCarDTO> responseList = new ArrayList<>();
-        for (Car c : cars) {
-            responseList.add(mapCarToCarResponse(c));
-        }
-        return responseList;
-    }
     public List<ResponseCarDTO> getAllCars(String carMake, Long garageId, String city,
                                            Integer fromYear, Integer toYear) {
         List<Car> cars = carRepository.getAllCars(carMake,

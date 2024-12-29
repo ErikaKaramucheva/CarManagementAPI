@@ -10,7 +10,6 @@ import uni.pu.fmi.CarManagementAPI.dto.request.CreateMaintenanceDTO;
 import uni.pu.fmi.CarManagementAPI.dto.request.UpdateMaintenanceDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.MonthlyRequestsReportDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.ResponseMaintenanceDTO;
-import uni.pu.fmi.CarManagementAPI.service.Implementation.MaintenanceServiceImpl;
 import uni.pu.fmi.CarManagementAPI.service.MaintenanceService;
 
 import java.time.LocalDate;

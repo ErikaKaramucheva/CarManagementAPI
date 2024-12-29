@@ -30,7 +30,6 @@ public class CarController {
                                                         @RequestParam(required = false) String city,
                                                         @RequestParam(required = false) Integer fromYear,
                                                         @RequestParam(required = false) Integer toYear) {
-        //List<ResponseCarDTO> resp=carService.getAllCars();
          List<ResponseCarDTO> resp = carService.getAllCars(carMake, garageId, city, fromYear, toYear);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import uni.pu.fmi.CarManagementAPI.dto.request.CreateGarageDTO;
 import uni.pu.fmi.CarManagementAPI.dto.request.UpdateGarageDTO;
-import uni.pu.fmi.CarManagementAPI.dto.response.MonthlyRequestsReportDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.GarageDailyAvailabilityReportDTO;
 import uni.pu.fmi.CarManagementAPI.dto.response.ResponseGarageDTO;
 import uni.pu.fmi.CarManagementAPI.model.Garage;
@@ -14,9 +13,8 @@ import uni.pu.fmi.CarManagementAPI.repository.GarageRepository;
 import uni.pu.fmi.CarManagementAPI.service.GarageService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GarageServiceImpl implements GarageService {
@@ -89,16 +87,6 @@ public class GarageServiceImpl implements GarageService {
         return mapGarageToGarageResponse(garage);
     }
 
-    /*@Override
-    public List<ResponseGarageDTO> getAllGarages() {
-        List<Garage> garages = garageRepository.findAll();
-        List<ResponseGarageDTO> responseList = new ArrayList<>();
-        for (Garage g : garages) {
-            responseList.add(mapGarageToGarageResponse(g));
-        }
-        return responseList;
-    }\*/
-
     @Override
     public List<GarageDailyAvailabilityReportDTO> dailyAvailabilityReport(Long garageId, LocalDate startDate, LocalDate endDate) {
         Optional<Garage> currentGarage = garageRepository.findById(garageId);
@@ -108,20 +96,18 @@ public class GarageServiceImpl implements GarageService {
         if (endDate.isBefore(startDate)) {
             throw new ResponseStatusException((HttpStatus.BAD_REQUEST), "Invalid Input Data - End Date Is Before Start Date");
         }
-
-        List<GarageDailyAvailabilityReportDTO> report = new ArrayList<>();
-        // garageRepository.garageAvailability(garageId, startDate, endDate);
-        /*Set<LocalDate> existingDates = report.stream()
-                .map(GarageDailyAvailabilityReportDTO::getDate)
-                .collect(Collectors.toSet());
-
-// Добавяме липсващи дати
-        for (LocalDate current = startDate; !current.isAfter(endDate); current = current.plusDays(1)) {
-            if (!existingDates.contains(current)) {
-                report.add(new GarageDailyAvailabilityReportDTO(current, 0, currentGarage.get().getCapacity()));
+        List<GarageDailyAvailabilityReportDTO> report = garageRepository.garageAvailability(garageId,startDate,endDate,currentGarage.get().getCapacity());
+        for(LocalDate currentDate = startDate, end = endDate; !currentDate.isAfter(end); currentDate = currentDate.plusDays(1)) {
+            final LocalDate currentLocalDate = currentDate;
+            if(!report
+                    .stream()
+                    .anyMatch(req -> req.getDate().equals(currentLocalDate))) {
+                report.add(new GarageDailyAvailabilityReportDTO(currentDate, 0,currentGarage.get().getCapacity()));
             }
-        }*/
-
+        }
+        report = report.stream()
+                .sorted(Comparator.comparing(GarageDailyAvailabilityReportDTO::getDate))
+                .collect(Collectors.toList());
 
         return report;
     }

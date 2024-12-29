@@ -18,8 +18,6 @@ public interface GarageService {
 
     ResponseGarageDTO updateGarage(Long id, UpdateGarageDTO updateGarageDTO);
 
-    //List<ResponseGarageDTO> getAllGarages();
-
     List<GarageDailyAvailabilityReportDTO> dailyAvailabilityReport(Long garageId, LocalDate startDate, LocalDate endDate);
 
     List<ResponseGarageDTO> getGaragesByCity(String city);

@@ -20,9 +20,8 @@ import uni.pu.fmi.CarManagementAPI.service.MaintenanceService;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MaintenanceServiceImpl implements MaintenanceService {
@@ -46,26 +45,25 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return response;
     }
 
-    private Maintenance mapMaintenanceRequestToMaintenance(CreateMaintenanceDTO m){
-        Maintenance maintenance= new Maintenance();
-        maintenance.setServiceType(m.getServiceType());
-        maintenance.setScheduledDate(m.getScheduledDate());
-        ResponseCarDTO responseCar=carService.getCarById(m.getCarId());
+    public Car mapResponseCarToCar(ResponseCarDTO responseCar){
         Car car= new Car();
         car.setMake(responseCar.getMake());
         car.setModel(responseCar.getModel());
         car.setLicensePlate(responseCar.getLicensePlate());
         car.setProductionYear(responseCar.getProductionYear());
         car.setCarId(responseCar.getId());
+        return car;
+    }
+
+
+    private Maintenance mapMaintenanceRequestToMaintenance(CreateMaintenanceDTO m){
+        Maintenance maintenance= new Maintenance();
+        maintenance.setServiceType(m.getServiceType());
+        maintenance.setScheduledDate(m.getScheduledDate());
+        ResponseCarDTO responseCar=carService.getCarById(m.getCarId());
         ResponseGarageDTO garageResponse = garageService.getGarageById(m.getGarageId());
-        Garage garage = new Garage();
-        garage.setGarageId(garageResponse.getId());
-        garage.setName(garageResponse.getName());
-        garage.setCity(garageResponse.getCity().toLowerCase());
-        garage.setLocation(garageResponse.getLocation());
-        garage.setCapacity(garageResponse.getCapacity());
-        maintenance.setCar(car);
-        maintenance.setGarage(garage);
+        maintenance.setCar(mapResponseCarToCar(responseCar));
+        maintenance.setGarage(carService.mapResponseGarageToGarage(garageResponse));
         return maintenance;
     }
 
@@ -108,28 +106,16 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setServiceType(updateMaintenanceDTO.getServiceType());
         maintenance.setScheduledDate(updateMaintenanceDTO.getScheduledDate());
         ResponseCarDTO responseCar=carService.getCarById(updateMaintenanceDTO.getCarId());
-        Car car= new Car();
-        car.setMake(responseCar.getMake());
-        car.setModel(responseCar.getModel());
-        car.setLicensePlate(responseCar.getLicensePlate());
-        car.setProductionYear(responseCar.getProductionYear());
-        car.setCarId(responseCar.getId());
-        maintenance.setCar(car);
+        maintenance.setCar(mapResponseCarToCar(responseCar));
         ResponseGarageDTO garageResponse = garageService.getGarageById(updateMaintenanceDTO.getGarageId());
-        Garage garage = new Garage();
-        garage.setGarageId(garageResponse.getId());
-        garage.setName(garageResponse.getName());
-        garage.setCity(garageResponse.getCity().toLowerCase());
-        garage.setLocation(garageResponse.getLocation());
-        garage.setCapacity(garageResponse.getCapacity());
-        maintenance.setGarage(garage);
+        maintenance.setGarage(carService.mapResponseGarageToGarage(garageResponse));
         maintenance=maintenanceRepository.save(maintenance);
         return mapMaintenanceToMaintenanceResponse(maintenance);
     }
 
     @Override
     public List<ResponseMaintenanceDTO> getAllMaintenances(Long carId, Long garageId, LocalDate startDate, LocalDate endDate) {
-        List<Maintenance> maintenances = maintenanceRepository.findAll();
+        List<Maintenance> maintenances = maintenanceRepository.getAllMaintenances(carId,garageId,startDate,endDate);
         List<ResponseMaintenanceDTO> responseList = new ArrayList<>();
         for (Maintenance m : maintenances) {
             responseList.add(mapMaintenanceToMaintenanceResponse(m));
@@ -139,6 +125,21 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public List<MonthlyRequestsReportDTO> getMonthlyRequestsReport(Long garageId, YearMonth startMonth, YearMonth endMonth) {
-        return List.of();
+        LocalDate startDate= startMonth.atDay(1);
+        LocalDate endDate= endMonth.atEndOfMonth();
+        List<MonthlyRequestsReportDTO> monthlyRequests = maintenanceRepository.getMonthlyRequestsReport(garageId,startDate,endDate);
+        for(YearMonth currentMonth = startMonth, end = endMonth; !currentMonth.isAfter(end); currentMonth = currentMonth.plusMonths(1)) {
+            final YearMonth currentYearMonth = currentMonth;
+            if(!monthlyRequests
+                    .stream()
+                    .anyMatch(req -> req.getYearMonth().equals(currentYearMonth))) {
+                monthlyRequests.add(new MonthlyRequestsReportDTO(currentMonth, 0));
+            }
+        }
+        //monthlyRequests.stream().sorted();
+        monthlyRequests = monthlyRequests.stream()
+                .sorted(Comparator.comparing(MonthlyRequestsReportDTO::getYearMonth))
+                .collect(Collectors.toList());
+        return monthlyRequests;
     }
 }

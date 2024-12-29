@@ -15,4 +15,10 @@ public class GarageDailyAvailabilityReportDTO {
     private LocalDate date;
     private int requests;
     private int availableCapacity;
+
+    public GarageDailyAvailabilityReportDTO(LocalDate date, long requests, long availableCapacity) {
+        this.date = date;
+        this.requests = (int)requests;
+        this.availableCapacity = (int)availableCapacity;
+    }
 }

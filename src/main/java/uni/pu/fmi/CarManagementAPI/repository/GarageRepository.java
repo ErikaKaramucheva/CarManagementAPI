@@ -2,6 +2,7 @@ package uni.pu.fmi.CarManagementAPI.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uni.pu.fmi.CarManagementAPI.dto.response.GarageDailyAvailabilityReportDTO;
 import uni.pu.fmi.CarManagementAPI.model.Garage;
@@ -14,13 +15,18 @@ import java.util.Set;
 public interface GarageRepository extends ListCrudRepository<Garage, Long> {
     List<Garage> findByCity(String city);
 
-   /*@Query("SELECT g FROM Garage g " +
-                    "JOIN g.maintenances m " +
-                    "WHERE g.garageId = : garageId and " +
-            "m.scheduledDate <= :endDate AND m.scheduledDate >= :startDate")*/
-   /* @Query("SELECT m.scheduledDate, COUNT(m), capacity - COUNT(m) " +
-            "FROM Maintenance m " +
-            "WHERE m.garage.id = :garageId AND m.scheduledDate BETWEEN :startDate AND :endDate " +
-            "GROUP BY m.scheduledDate")*/
-    //List<GarageDailyAvailabilityReportDTO> garageAvailability(Long garageId, LocalDate startDate, LocalDate endDate);
+   @Query("""
+			select new uni.pu.fmi.CarManagementAPI.dto.response.GarageDailyAvailabilityReportDTO 
+			(m.scheduledDate, count(m.maintenanceId), (:totalCapacity - count(m.maintenanceId)))
+			from Maintenance m 
+			where 
+				m.garage.garageId = :garageId and 
+				m.scheduledDate >= :startDate and m.scheduledDate <= :endDate 
+			group by m.scheduledDate
+			"""
+   )
+    List<GarageDailyAvailabilityReportDTO> garageAvailability(@Param("garageId") Long garageId,
+                                                              @Param("startDate") LocalDate startDate,
+                                                              @Param("endDate") LocalDate endDate,
+                                                              @Param("totalCapacity") Integer totalCapacity);
 }
