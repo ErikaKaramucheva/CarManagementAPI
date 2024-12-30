@@ -101,7 +101,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         if (!currentMaintenance.isPresent()) {
             throw new ResponseStatusException((HttpStatus.NOT_FOUND), "Maintenance Not Found");
         }
-        Maintenance maintenance=new Maintenance();
+        Maintenance maintenance=currentMaintenance.get();
         maintenance.setMaintenanceId(id);
         maintenance.setServiceType(updateMaintenanceDTO.getServiceType());
         maintenance.setScheduledDate(updateMaintenanceDTO.getScheduledDate());

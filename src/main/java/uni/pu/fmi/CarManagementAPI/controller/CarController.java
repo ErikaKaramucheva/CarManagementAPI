@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cars")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class CarController {
     @Autowired
     private CarService carService;
@@ -24,7 +25,7 @@ public class CarController {
         return ResponseEntity.ok(car);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<ResponseCarDTO>> getCars(@RequestParam(required = false) String carMake,
                                                         @RequestParam(required = false) Long garageId,
                                                         @RequestParam(required = false) String city,

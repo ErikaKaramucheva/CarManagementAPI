@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/maintenance")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class MaintenanceController {
     @Autowired
     private MaintenanceService maintenanceService;
@@ -29,7 +30,7 @@ public class MaintenanceController {
         return ResponseEntity.ok(maintenance);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<ResponseMaintenanceDTO>> getMaintenance(@RequestParam(required = false) Long carId,
                                                                        @RequestParam(required=false) Long garageId,
                                                                        @RequestParam(required = false) LocalDate startDate,
