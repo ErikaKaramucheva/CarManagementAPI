@@ -1,5 +1,8 @@
 package uni.pu.fmi.CarManagementAPI.controller;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cars")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "400", content = {@Content()}),
+        @ApiResponse(responseCode = "404",content = {@Content()})
+})
 //@CrossOrigin(origins = "http://localhost:3000")
 public class CarController {
     @Autowired

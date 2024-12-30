@@ -56,9 +56,11 @@ public class CarServiceImpl implements CarService {
         car.setLicensePlate(carRequest.getLicensePlate());
         List<Garage> newGarages = new ArrayList<>();
         List<Long> garageList= (List<Long>) carRequest.getGarageIds();
-        for(int i=0;i<garageList.size();i++){
-            ResponseGarageDTO g=garageService.getGarageById(garageList.get(i));
-            newGarages.add(mapResponseGarageToGarage(g));
+        if(garageList!=null) {
+            for (int i = 0; i < garageList.size(); i++) {
+                ResponseGarageDTO g = garageService.getGarageById(garageList.get(i));
+                newGarages.add(mapResponseGarageToGarage(g));
+            }
         }
         car.setGarages(newGarages);
         return car;
@@ -107,9 +109,13 @@ public class CarServiceImpl implements CarService {
         car.setProductionYear(updateCarDTO.getProductionYear());
         List<Garage> garages=new ArrayList<>();
         List<Long> garageList= (List<Long>) updateCarDTO.getGarageIds();
-        for(int i=0;i<garageList.size();i++){
-            ResponseGarageDTO g=garageService.getGarageById(garageList.get(i));
-            garages.add(mapResponseGarageToGarage(g));
+        if(garageList==null){
+            garages.addAll(currentCar.get().getGarages());
+        }else {
+            for (int i = 0; i < garageList.size(); i++) {
+                ResponseGarageDTO g = garageService.getGarageById(garageList.get(i));
+                garages.add(mapResponseGarageToGarage(g));
+            }
         }
         car.setGarages(garages);
         car = carRepository.save(car);

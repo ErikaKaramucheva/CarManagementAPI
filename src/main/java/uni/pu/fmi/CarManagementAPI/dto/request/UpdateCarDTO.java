@@ -1,7 +1,9 @@
 package uni.pu.fmi.CarManagementAPI.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +15,16 @@ import java.util.Set;
 @Getter
 @Setter
 public class UpdateCarDTO {
-    @NotEmpty(message = "Make is required!")
+    @NotBlank(message = "Make is required!")
+    @Size(min=1, message = "Make must be at least 1 character.")
     private String make;
-    @NotEmpty(message = "Model is required!")
+    @NotBlank(message = "Model is required!")
+    @Size(min=1, message = "Model must be at least 1 character.")
     private String model;
     @Positive(message = "Production year must be positive!")
     private int productionYear;
-    @NotEmpty(message = "License plate is required!")
+    @NotBlank(message = "License plate is required!")
+    @Size(min=1, message = "License plate must be at least 1 character.")
     private String licensePlate;
     private List<Long> garageIds;
 }

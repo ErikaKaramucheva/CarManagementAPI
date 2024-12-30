@@ -1,14 +1,12 @@
 package uni.pu.fmi.CarManagementAPI.model;
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter
